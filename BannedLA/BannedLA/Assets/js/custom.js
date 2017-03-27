@@ -143,12 +143,12 @@ jQuery(document).ready(function () {
   /* ===================================================================
              TWEETIE -  TWITTER FEED PLUGIN THAT WORKS WITH NEW Twitter 1.1 API
              ==================================================================== */
-            jQuery('.tweet').twittie({
-                apiPath: 'twit-api/tweet.php',
-                dateFormat: '%b. %d, %Y',
-                template: '{{tweet}} <div class="date">{{date}}</div> ',
-                count: 2
-            });
+            //jQuery('.tweet').twittie({
+            //    apiPath: 'twit-api/tweet.php',
+            //    dateFormat: '%b. %d, %Y',
+            //    template: '{{tweet}} <div class="date">{{date}}</div> ',
+            //    count: 2
+            //});
 
 
 /** product single slider**/

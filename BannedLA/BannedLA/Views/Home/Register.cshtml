@@ -24,7 +24,7 @@
                         <div class="fg-line">
                             <label class="fg-label col-md-3">First Name</label>
                             <div class="col-md-9">
-                                <input type="text" class="input-sm form-control fg-input" id="firstName" name="firstName" ng-model="reg.registration.FirstName" required>
+                                <input type="text" class="input-sm form-control fg-input" id="firstName" name="firstName" ng-model="reg.newUserInfo.firstName" required>
                             </div>
                             <small ng-show="userAccountForm.firstName.$invalid && !userAccountForm.firstName.$pristine && userAccountForm.firstName.$error.required" class="help-block">Please enter your first name.</small>
                         </div>
@@ -34,7 +34,7 @@
                             <label class="fg-label col-md-3">Last Name</label>
                             <div class="col-md-9">
 
-                                <input type="text" class="input-sm form-control fg-input" id="lastName" name="lastName" ng-model="reg.registration.LastName" required>
+                                <input type="text" class="input-sm form-control fg-input" id="lastName" name="lastName" ng-model="reg.newUserInfo.lastName" required>
                             </div>
 
                             <small ng-show="userAccountForm.lastName.$invalid && !userAccountForm.lastName.$pristine && userAccountForm.lastName.$error.required" class="help-block">Please enter your last name.</small>
@@ -45,7 +45,7 @@
                             <label class="fg-label col-md-3">Phone</label>
                             <div class="col-md-9">
 
-                                <input type="text" class="input-sm form-control fg-input" id="phoneNumber" name="phoneNumber" ng-maxlength="10" ng-pattern="reg.phoneRegex" ng-model="reg.registration.Phone" required>
+                                <input type="text" class="input-sm form-control fg-input" id="phoneNumber" name="phoneNumber" ng-maxlength="10" ng-pattern="reg.phoneRegex" ng-model="reg.newUserInfo.phone" required>
                             </div>
                             <small ng-show="userAccountForm.phoneNumber.$invalid && !userAccountForm.phoneNumber.$pristine && userAccountForm.phoneNumber.$error.required" class="help-block">Please enter a phone number.</small>
                             <small ng-show="userAccountForm.phoneNumber.$error.maxlength || userAccountForm.phoneNumber.$error.pattern" class="help-block">Enter a valid phone number.</small>
@@ -57,7 +57,7 @@
                             <label class="fg-label col-md-3">Email Address</label>
                             <div class="col-md-9">
 
-                                <input type="text" class="input-sm form-control fg-input" id="emailAddress" name="emailAddress" ng-model="reg.registration.Email" required>
+                                <input type="text" class="input-sm form-control fg-input" id="emailAddress" name="emailAddress" ng-model="reg.newUserInfo.email" required>
                             </div>
                             <small ng-show="userAccountForm.emailAddress.$invalid && !userAccountForm.emailAddress.$pristine" class="help-block">Please enter a valid email address.</small>
                         </div>
@@ -68,7 +68,7 @@
                             <label class="fg-label col-md-3">Password</label>
                             <div class="col-md-9">
 
-                                <input type="password" class="input-sm form-control fg-input" ng-pattern="reg.regex" id="passwordInput" name="passwordInput" ng-minlength="6" ng-maxlength="15" ng-model="reg.registration.Password">
+                                <input type="password" class="input-sm form-control fg-input" ng-pattern="reg.regex" id="passwordInput" name="passwordInput" ng-minlength="6" ng-maxlength="15" ng-model="reg.newUserInfo.password">
                             </div>
                             <small ng-show="userAccountForm.passwordInput.$invalid && !userAccountForm.passwordInput.$pristine && userAccountForm.passwordInput.$error.pattern" class="help-block">Passwords must be at least 6 characters. Passwords must have at least one non letter or digit character. Passwords must have at least one digit ('0'-'9'). Passwords must have at least one uppercase ('A'-'Z').</small>
                             <small ng-show="userAccountForm.passwordInput.$error.minlength" class="help-block">Password is too short.</small>
@@ -105,31 +105,43 @@
 <div class="space-60"></div>
 
 @section Scripts{
-
-
-
     <script type="text/javascript">
-
 
         (function () {
             "use strict";
 
             angular.module(APPNAME)
-                .factory('$registrationService', registrationServiceFactory);
+                 .factory("$registrationService", userService);
 
-            registrationServiceFactory.$inject = ['$baseService'];
+            userService.$inject = ["$http"];
 
-            function registrationServiceFactory($baseService) {
-                var aSabioServiceObject = sabio.services.registration;
+            function userService($http) {
+                var svc = this;
+                //svc.getUsers = _getUsers;
+                svc.insertNewUser = _insertNewUser;
 
-                var registrationService = $baseService.merge(true, {}, aSabioServiceObject, $baseService);
+                console.log("angular service working");
 
-                console.log("Registration service", aSabioServiceObject);
+                //function _getUsers(success, error) {
+                //    var request = $http({
+                //        method: "get"
 
-                return registrationService;
-
-
-
+                //       , url: "/api/users/get"
+                //        , param: null
+                //    });
+                //    return (request.then(success, error));
+                //}
+                function _insertNewUser(data) {
+                    return $http.post("/api/public/add", data);
+                    //var request = $http({
+                    //    method: "post"
+                    //    , url: "/api/public/add"
+                    //    , data: data
+                    //    , param: null
+                    //});
+                    //return (request.then(data, success, error));
+                }
+                return svc;
             }
         })();
 
@@ -145,15 +157,70 @@
                 //$baseController
                 ) {
                 var vm = this;
+                vm.newUserInfo = {};
 
                 vm.$scope = $scope;
-                //vm.$baseController = $baseController;
+                vm.onCreateUserSubmit = _onCreateUserSubmit;
+                vm.$registrationService = $registrationService;
 
                 //firstname, last name, phone email password
 
                 vm.message = "Hello World";
                 vm.regex = /(?=.*[!@@#\$%\^&\*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
                 vm.phoneRegex = /^[0-9]*$/;
+                vm.userId = null;
+
+                render();
+
+                function render() {
+
+                }
+
+                function _postNewUser() {
+
+                    //    $http({
+                    //        method: 'post',
+                    //        url: '/api/public/add',
+                    //        data: vm.newUserInfo
+                    //    }).then(function (response) {
+                    //        if (response.data && response.data.items) {
+                    //            $response_items = response.data.items;
+                    //        }
+                    //    }, function myError(response) {
+                    //        console.log(response.statusText);
+                    //    });
+                    //}
+
+                    //vm.$registrationService.insertNewUser(vm.newUserInfo, _insertNewUserSuccess, _insertNewUserError)
+
+                    var payload = vm.newUserInfo;
+                    vm.$registrationService.insertNewUser(payload)
+                        .then(function mySuccess(response) {
+                            console.log("Full Response", response);
+                            if (response.data.IsSuccessful == true) {
+                                //window.location.href = "/home/index"
+                                console.log("Test Redirect");
+                            }
+
+                        }, function myError(response) {
+                            console.log("Error Response", response);
+                            console.log(response.statusText);
+                        });
+                }
+
+                function _insertNewUserSuccess(data) {
+                    console.log('Success Data: ', data);
+                }
+
+                function _insertNewUserError(jqXhr, error) {
+                    console.log(jqXhr);
+                }
+
+                function _onCreateUserSubmit() {
+                    _postNewUser();
+                }
+
+
             }
         })();
 
