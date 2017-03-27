@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--breadcrumb start-->
+<div class="breadcrumb-wrapper">
+    <div class="container">
+        <h1>Login or Register</h1>
+    </div>
+</div>
+<!--end breadcrumb-->
+
+<div class="space-60"></div>
+<div class="container" ng-controller="registerController as reg">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="sky-form-login">
+                <form id="userAccountForm" name="userAccountForm" class="form-horizontal" ng-submit="reg.onCreateUserSubmit(userAccountForm.$valid)" novalidate>
+                    <h3 class="text-left"><i class="fa fa-user"></i>Create new account with bannedLA</h3>
+
+                    <div class="form-group" ng-class="{'has-error': userAccountForm.firstName.$invalid && !userAccountForm.firstName.$pristine}">
+                        <div class="fg-line">
+                            <label class="fg-label col-md-3">First Name</label>
+                            <div class="col-md-9">
+                                <input type="text" class="input-sm form-control fg-input" id="firstName" name="firstName" ng-model="reg.registration.FirstName" required>
+                            </div>
+                            <small ng-show="userAccountForm.firstName.$invalid && !userAccountForm.firstName.$pristine && userAccountForm.firstName.$error.required" class="help-block">Please enter your first name.</small>
+                        </div>
+                    </div>
+                    <div class="form-group fg-float" ng-class="{'has-error':userAccountForm.lastName.$invalid && !userAccountForm.lastName.$pristine}">
+                        <div class="fg-line">
+                            <label class="fg-label col-md-3">Last Name</label>
+                            <div class="col-md-9">
+
+                                <input type="text" class="input-sm form-control fg-input" id="lastName" name="lastName" ng-model="reg.registration.LastName" required>
+                            </div>
+
+                            <small ng-show="userAccountForm.lastName.$invalid && !userAccountForm.lastName.$pristine && userAccountForm.lastName.$error.required" class="help-block">Please enter your last name.</small>
+                        </div>
+                    </div>
+                    <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.phoneNumber.$invalid && !userAccountForm.phoneNumber.$pristine}">
+                        <div class="fg-line">
+                            <label class="fg-label col-md-3">Phone</label>
+                            <div class="col-md-9">
+
+                                <input type="text" class="input-sm form-control fg-input" id="phoneNumber" name="phoneNumber" ng-maxlength="10" ng-pattern="reg.phoneRegex" ng-model="reg.registration.Phone" required>
+                            </div>
+                            <small ng-show="userAccountForm.phoneNumber.$invalid && !userAccountForm.phoneNumber.$pristine && userAccountForm.phoneNumber.$error.required" class="help-block">Please enter a phone number.</small>
+                            <small ng-show="userAccountForm.phoneNumber.$error.maxlength || userAccountForm.phoneNumber.$error.pattern" class="help-block">Enter a valid phone number.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.emailAddress.$invalid && !userAccountForm.emailAddress.$pristine}">
+                        <div class="fg-line">
+                            <label class="fg-label col-md-3">Email Address</label>
+                            <div class="col-md-9">
+
+                                <input type="text" class="input-sm form-control fg-input" id="emailAddress" name="emailAddress" ng-model="reg.registration.Email" required>
+                            </div>
+                            <small ng-show="userAccountForm.emailAddress.$invalid && !userAccountForm.emailAddress.$pristine" class="help-block">Please enter a valid email address.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.passwordInput.$invalid && !userAccountForm.passwordInput.$pristine}" required>
+                        <div class="fg-line">
+                            <label class="fg-label col-md-3">Password</label>
+                            <div class="col-md-9">
+
+                                <input type="password" class="input-sm form-control fg-input" ng-pattern="reg.regex" id="passwordInput" name="passwordInput" ng-minlength="6" ng-maxlength="15" ng-model="reg.registration.Password">
+                            </div>
+                            <small ng-show="userAccountForm.passwordInput.$invalid && !userAccountForm.passwordInput.$pristine && userAccountForm.passwordInput.$error.pattern" class="help-block">Passwords must be at least 6 characters. Passwords must have at least one non letter or digit character. Passwords must have at least one digit ('0'-'9'). Passwords must have at least one uppercase ('A'-'Z').</small>
+                            <small ng-show="userAccountForm.passwordInput.$error.minlength" class="help-block">Password is too short.</small>
+                        </div>
+                    </div>
+                    <div class="form-group fg-float">
+                        <div class="col-md-10 col-md-offset-1">
+                            <label class="checkbox"><input type="checkbox" name="subscription" id="subscription"><i></i>I want to receive news and  special offers</label>
+                            <label class="checkbox"><input type="checkbox" name="terms" id="terms"><i></i>I agree with the Terms and Conditions</label>
+                        </div>
+                    </div>
+                    <div class="form-group fg-float">
+                        <div class="col-md-10 col-md-offset-1">
+                            <button value="submit" id="createNewUserButton" class="btn btn-light-dark pull-right" ng-disabled="userAccountForm.$invalid">Create Account</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div><!--col end-->
+        <div class="col-md-6">
+            <div class="login-register-aside-box">
+                <h3>Already have an account!</h3>
+                <p>
+                    If you already have an account, please login below!
+                </p>
+                <br>
+                <a href='login.html' class="btn btn-light-dark btn-lg">Login Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="space-60"></div>
+
+@section Scripts{
+
+
+
+    <script type="text/javascript">
+
+
+        (function () {
+            "use strict";
+
+            angular.module(APPNAME)
+                .factory('$registrationService', registrationServiceFactory);
+
+            registrationServiceFactory.$inject = ['$baseService'];
+
+            function registrationServiceFactory($baseService) {
+                var aSabioServiceObject = sabio.services.registration;
+
+                var registrationService = $baseService.merge(true, {}, aSabioServiceObject, $baseService);
+
+                console.log("Registration service", aSabioServiceObject);
+
+                return registrationService;
+
+
+
+            }
+        })();
+
+        (function () {
+            "use strict"
+            angular.module(APPNAME)
+            .controller("registerController", RegisterController)
+
+            RegisterController.$inject = ['$scope', '$registrationService'];
+            function RegisterController(
+                $scope,
+                $registrationService
+                //$baseController
+                ) {
+                var vm = this;
+
+                vm.$scope = $scope;
+                //vm.$baseController = $baseController;
+
+                //firstname, last name, phone email password
+
+                vm.message = "Hello World";
+                vm.regex = /(?=.*[!@@#\$%\^&\*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
+                vm.phoneRegex = /^[0-9]*$/;
+            }
+        })();
+
+    </script>
+
+
+
+
+
+}
+
