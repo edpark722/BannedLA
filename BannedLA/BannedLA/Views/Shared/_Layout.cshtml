@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Assan E-commerce</title>
+    <title>BannedLA Shoe Store</title>
 
     <!-- Bootstrap -->
     <link href="/Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -397,6 +397,9 @@
         <script src="~/Assets/Themes/js/core/services/baseHttp.service.js"></script>
         <script src="~/Assets/Themes/js/core/services/systemEvent.service.js"></script>
         <script src="~/Scripts/sabio.ng.app.js"></script>*@
+    <!--Angular Scripts-->
+    <script src="~/Assets/bower_components/angular-route/angular-route.js"></script>
+    @*<script src="~/Assets/bower_components/angular-animate/angular-animate.js"></script>*@
     <!--revolution slider extentions-->
     <script type="text/javascript" src="/Assets/revolution/js/jquery.themepunch.revolution.min.js"></script>
     <script type="text/javascript" src="/Assets/revolution/js/jquery.themepunch.tools.min.js"></script>
@@ -409,9 +412,23 @@
 
         (function () {
             "use strict"
-            angular.module(APPNAME, []);
+            angular.module(APPNAME, ['ngRoute']);
         })();
 
+
+
+
+        (function () {
+            "use strict"
+            angular.module(APPNAME)
+            .controller("homeController", HomeController)
+
+            HomeController.$inject = [];
+            function HomeController() {
+                var vm = this;
+                vm.message = "Hello World";
+            }
+        })();
 
     </script>
     @RenderSection("scripts", required: false)
